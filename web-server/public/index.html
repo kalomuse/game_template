@@ -1,6 +1,7 @@
 <script src="/lib/socket.io.js"></script>
 <script src="/lib/pomeloclient.js"></script>
 <script type="text/javascript">
+    //通信
     var pomelo = window.pomelo;
     var host = "127.0.0.1";
     var port = "3010";
@@ -36,7 +37,6 @@ var path;
 var index;
 
 function create() {
-
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     game.add.tileSprite(0, 0, game.width, game.height, 'space');
@@ -75,7 +75,7 @@ function create() {
 
     sprite.anchor.set(0.5);
 
-    createText(16, 16, 'If you can catch the fireball, drag it around');
+    createText(16, 16, '');
 
 }
 
