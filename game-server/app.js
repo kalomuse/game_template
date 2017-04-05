@@ -1,5 +1,6 @@
 var pomelo = require('pomelo');
-
+var base_dao = require('./dao/base');
+base_dao.connect();
 /**
  * Init app for client.
  */
@@ -19,7 +20,6 @@ app.configure('production|development', 'connector', function(){
       heartbeatInterval : 25 * 1000
     });
 });
-
 // start app
 app.start();
 

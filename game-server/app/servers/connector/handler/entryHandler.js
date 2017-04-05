@@ -1,3 +1,4 @@
+var test_dao = require('../../../../dao/test');
 module.exports = function(app) {
   return new Handler(app);
 };
@@ -15,7 +16,8 @@ var Handler = function(app) {
  * @return {Void}
  */
 Handler.prototype.entry = function(msg, session, next) {
-  next(null, {code: 200, msg: 'game server is ok.'});
+	test_dao.save();
+  	next(null, {code: 200, msg: 'game server is ok.'});
 };
 
 /**
