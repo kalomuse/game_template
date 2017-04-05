@@ -1,9 +1,9 @@
 {
-    "name":"template",
-    "version":"0.0.1",
-    "private":false,
-    "dependencies":{
-        "pomelo":"2.2.5"
-    }
+  "name": "template",
+  "version": "0.0.1",
+  "private": false,
+  "dependencies": {
+    "mongoose": "^4.9.3",
+    "pomelo": "2.2.5"
+  }
 }
-

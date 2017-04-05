@@ -11,11 +11,10 @@
             log: true
         }, function() {
             pomelo.request("connector.entryHandler.entry", "hello pomelo", function(data) {
-                //alert(data.msg);
+                alert(data.msg);
             });
         });
     }
-    show();
 </script>
 <script type="text/javascript" src="/lib/phaser.js"></script>
 <script type="text/javascript">
@@ -132,4 +131,4 @@ function render() {
 }
 
 </script>
-
+<button onclick="show();">发送</button>
