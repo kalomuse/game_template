@@ -1,7 +1,6 @@
 <script src="/lib/socket.io.js"></script>
 <script src="/lib/pomeloclient.js"></script>
 <script type="text/javascript">
-    //通信
     var pomelo = window.pomelo;
     var host = "127.0.0.1";
     var port = "3010";
@@ -37,42 +36,59 @@ var path;
 var index;
 
 function create() {
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-
+    //添加背景图
     game.add.tileSprite(0, 0, game.width, game.height, 'space');
 
+    //添加发射器
     emitter = game.add.emitter(game.world.centerX, game.world.centerY, 400);
 
+    //启动物理引擎
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    //创建粒子
     emitter.makeParticles( [ 'fire1', 'fire2', 'fire3', 'smoke' ] );
 
+    //设置粒子重力
     emitter.gravity = 200;
+    //设置粒子透明度渐变
     emitter.setAlpha(1, 0, 3000);
+    //设置粒子大小渐变
     emitter.setScale(0.8, 0, 0.8, 0, 3000);
-
+    //粒子发射器启动
     emitter.start(false, 3000, 5);
-
+    //添加动画ball
     sprite = game.add.sprite(0, 300, 'ball', 0);
-
+    //动画启动物理引擎
     game.physics.arcade.enable(sprite);
-
+    //设置y轴重力
     game.physics.arcade.gravity.y = 150;
+    //左边界关闭
     game.physics.arcade.checkCollision.left = false;
+    //右边界关闭
     game.physics.arcade.checkCollision.right = false;
-
-    sprite.body.setSize(80, 80, 0, 0);
+    //设置尺寸
+    sprite.body.setSize(180, 180, 0, 0);
+    //启动动画边界碰撞
     sprite.body.collideWorldBounds = true;
+    //设置反弹为1，没有阻力
     sprite.body.bounce.set(1);
+    //设置动画速度
     sprite.body.velocity.set(300, 200);
 
+    //键盘开启
     sprite.inputEnabled = true;
-
+    //拖动开启
     sprite.input.enableDrag();
+    //拖动start监听
     sprite.events.onDragStart.add(onDragStart, this);
+    //拖动stop监听
     sprite.events.onDragStop.add(onDragStop, this);
 
+    //动画添加
     sprite.animations.add('pulse');
+    //动画启动
     sprite.play('pulse', 30, true);
-
+    //设置锚点
     sprite.anchor.set(0.5);
 
     createText(16, 16, '');
