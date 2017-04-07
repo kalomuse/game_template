@@ -103,13 +103,18 @@ function update() {
     px *= -1;
     py *= -1;
 
+    //粒子发射最小速度
     emitter.minParticleSpeed.set(px, py);
+    //粒子发射最大速度
     emitter.maxParticleSpeed.set(px, py);
 
+    //粒子x坐标
     emitter.emitX = sprite.x;
+    //粒子y坐标
     emitter.emitY = sprite.y;
 
     // emitter.forEachExists(game.world.wrap, game.world);
+    //世界循环
     game.world.wrap(sprite, 64);
 
 }

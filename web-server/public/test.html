@@ -1,0 +1,98 @@
+<script type="text/javascript" src="/lib/phaser.js"></script>
+<script type="text/javascript">
+    var speed = 4;
+    var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-test', { preload: preload, create: create, update: update, render: render});
+    function preload(){ //预加载
+        game.load.image('space', '/assets/starfield.jpg');
+        game.load.spritesheet('ball', '/assets/plasmaball.png', 128,128);
+        game.load.image('fire1', '/assets/fire1.png');
+        game.load.image('fire2', '/assets/fire2.png');
+        game.load.image('fire3', '/assets/fire3.png');
+        game.load.image('smoke', '/assets/smoke-puff.png');
+
+    }
+    function create() {
+        //背景
+        game.add.tileSprite(0, 0, game.width, game.height, 'space');
+        game.add.tileSprite(game.width, 0, game.width, game.height, 'space');
+
+        //设置世界
+        game.world.setBounds(0, 0, 1400, 1400);
+
+        emitter = game.add.emitter(game.world.centerX, game.world.centerY, 400);
+
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+
+        emitter.makeParticles( [ 'fire1', 'fire2', 'fire3', 'smoke' ] );
+
+        emitter.gravity = 200;
+        emitter.setAlpha(1, 0, 3000);
+        emitter.setScale(0.8, 0, 0.8, 0, 3000);
+
+        emitter.start(false, 3000, 5);
+        //game.physics.arcade.enable(ufo);
+
+
+        //创建ufo
+        ufo = game.add.sprite(300, 100,'ball',0);
+        ufo.animations.add('ball');
+        ufo.play('ball', 30, true);
+        ufo.anchor.setTo(0.5, 0.5);
+        game.camera.follow(ufo);
+
+        //btn0 = game.add.button(100, 40, 'button', test, this, 0, 0, 0);
+        //加入键盘控制
+        cursors = game.input.keyboard.createCursorKeys();
+        //加入拖动事件
+        ufo.inputEnabled = true;
+        ufo.input.enableDrag();
+        //ufo.events.onDragStart.add(onDragStart, this);
+        //ufo.events.onDragStop.add(onDragStop, this);
+    }
+    function test() {
+        alert('aa');
+    }
+
+
+    function update() {
+        //世界循环
+        game.world.wrap(ufo, 64);
+        //粒子发射最小速度
+        emitter.minParticleSpeed.set(-200, -200);
+        //粒子发射最大速度
+        emitter.maxParticleSpeed.set(-200, -200);
+        //粒子x坐标
+        emitter.emitX = ufo.x;
+        //粒子y坐标
+        emitter.emitY = ufo.y;
+
+        if (cursors.left.isDown)
+        {
+            ufo.x -= speed;
+            //ufo.angle = -15;
+        }
+        else if (cursors.right.isDown)
+        {
+            ufo.x += speed;
+            //ufo.angle = 15;
+        }
+        else if (cursors.up.isDown)
+        {
+            ufo.y -= speed;
+        }
+        else if (cursors.down.isDown)
+        {
+            ufo.y += speed;
+        }
+        else
+        {
+            ufo.angle = 0;
+        }
+
+    }
+    function render () {
+        game.debug.text('Click buttons to switch follow styles', 32, 32);
+    }
+
+</script>
+
