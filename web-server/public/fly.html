@@ -19,6 +19,7 @@
             game.scale.maxHeight = maxHeight;
             //game.scale.startFullScreen(false);
         }
+
         function preload() {
             game.load.image('bullet', 'assets/bullet.png');                         //飞机子弹
             game.load.image('enemyBullet', 'assets/enemy-bullet.png');              //怪物子弹
@@ -77,8 +78,16 @@
 
             // 飞机
             player = game.add.sprite(game.width/2, game.height/2 + 150, 'ship');
+            //设置纹理
+            player.texture.baseTexture.scaleMode = PIXI.NEAREST;
+            //放大两倍
+            player.scale.set(2);
             player.anchor.setTo(0.5, 0.5);
             game.physics.enable(player, Phaser.Physics.ARCADE);
+
+            //放置控制杆
+            //var pad = game.plugins.add(Phaser.VirtualJoystick);
+            //var stick = pad.addStick(x, y, distance, 'arcade');
 
             //怪物
             aliens = game.add.group();
