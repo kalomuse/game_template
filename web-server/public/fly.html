@@ -1,0 +1,323 @@
+<script type="text/javascript" src="/lib/phaser.js"></script>
+<script>
+    var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+
+    function preload() {
+        game.load.image('bullet', 'assets/bullet.png');                         //飞机子弹
+        game.load.image('enemyBullet', 'assets/enemy-bullet.png');              //怪物子弹
+        game.load.spritesheet('invader', 'assets/invader32x32x4.png', 32, 32);  //怪物
+        game.load.image('ship', 'assets/player.png');                           //飞机
+        game.load.spritesheet('kaboom', 'assets/explode.png', 128, 128);        //爆炸动画效果
+        game.load.image('starfield', 'assets/starfield.png');                   //背景
+        //game.load.image('background', 'assets/background2.png');
+
+    }
+
+    var player;
+    var aliens;
+    var bullets;
+    var bulletTime = 0;
+    var cursors;
+    var fireButton;
+    var explosions;
+    var starfield;
+    var score = 0;
+    var scoreString = '';
+    var scoreText;
+    var lives;
+    var enemyBullet;
+    var firingTimer = 0;
+    var stateText;
+    var livingEnemies = [];
+
+    function create() {
+        //开启物理引擎
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+
+        //创建背景图
+        starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
+
+        //创建子弹30个
+        bullets = game.add.group();
+        bullets.enableBody = true;
+        bullets.physicsBodyType = Phaser.Physics.ARCADE;
+        bullets.createMultiple(30, 'bullet');
+        bullets.setAll('anchor.x', 0.5);
+        bullets.setAll('anchor.y', 1);
+        bullets.setAll('outOfBoundsKill', true);
+        bullets.setAll('checkWorldBounds', true);
+
+        //创建子弹
+        enemyBullets = game.add.group();
+        enemyBullets.enableBody = true;
+        enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
+        enemyBullets.createMultiple(10, 'enemyBullet');
+        enemyBullets.setAll('anchor.x', 0.5);
+        enemyBullets.setAll('anchor.y', 1);
+        //检测边界，超出摧毁
+        enemyBullets.setAll('outOfBoundsKill', true);
+        enemyBullets.setAll('checkWorldBounds', true);
+
+        // 飞机
+        player = game.add.sprite(400, 500, 'ship');
+        player.anchor.setTo(0.5, 0.5);
+        game.physics.enable(player, Phaser.Physics.ARCADE);
+
+        //怪物
+        aliens = game.add.group();
+        aliens.enableBody = true;
+        aliens.physicsBodyType = Phaser.Physics.ARCADE;
+        createAliens();
+
+        //分数字符
+        scoreString = 'Score : ';
+        scoreText = game.add.text(10, 10, scoreString + score, { font: '34px Arial', fill: '#fff' });
+
+        //生命字符
+        lives = game.add.group();
+        game.add.text(game.world.width - 100, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
+
+        //start字符
+        stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
+        stateText.anchor.setTo(0.5, 0.5);
+        //不可见
+        stateText.visible = false;
+        //生命值
+        for (var i = 0; i < 3; i++)
+        {
+            var ship = lives.create(game.world.width - 100 + (30 * i), 60, 'ship');
+            ship.anchor.setTo(0.5, 0.5);
+            ship.angle = 90;
+            ship.alpha = 0.4;
+        }
+
+        //爆炸
+        explosions = game.add.group();
+        explosions.createMultiple(30, 'kaboom');
+        explosions.forEach(setupInvader, this);
+
+        //键盘控制
+        cursors = game.input.keyboard.createCursorKeys();
+        //空格键添加
+        fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+    }
+
+    function createAliens () { //创建怪物
+        //40个排列
+        for (var y = 0; y < 4; y++)
+        {
+            for (var x = 0; x < 10; x++)
+            {
+                var alien = aliens.create(x * 48, y * 50, 'invader');
+                alien.anchor.setTo(0.5, 0.5);
+                alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
+                alien.play('fly');
+                alien.body.moves = false;
+            }
+        }
+
+        aliens.x = 100;
+        aliens.y = 50;
+
+        //aliens group线性动画
+        var tween = game.add.tween(aliens).to( { x: 200 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+
+        //loop事件激活回调
+        tween.onLoop.add(descend, this);
+    }
+
+    function setupInvader (invader) {
+
+        invader.anchor.x = 0.5;
+        invader.anchor.y = 0.5;
+        invader.animations.add('kaboom');
+
+    }
+
+    function descend() {
+
+        aliens.y += 10;
+
+    }
+
+    function update() {
+
+        //背景移动
+        starfield.tilePosition.y += 2;
+
+        if (player.alive)
+        {
+            //左右键监听
+            player.body.velocity.setTo(0, 0);
+
+            if (cursors.left.isDown)
+            {
+                player.body.velocity.x = -200;
+            }
+            else if (cursors.right.isDown)
+            {
+                player.body.velocity.x = 200;
+            }
+
+            //开火
+            if (fireButton.isDown)
+            {
+                fireBullet();
+            }
+            //敌人开火
+            if (game.time.now > firingTimer)
+            {
+                enemyFires();
+            }
+
+            //子弹和外星人碰撞回调
+            game.physics.arcade.overlap(bullets, aliens, collisionHandler, null, this);
+            //子弹和飞机碰撞回调
+            game.physics.arcade.overlap(enemyBullets, player, enemyHitsPlayer, null, this);
+        }
+
+    }
+
+    function render() {
+
+        // for (var i = 0; i < aliens.length; i++)
+        // {
+        //     game.debug.body(aliens.children[i]);
+        // }
+
+    }
+
+    function collisionHandler (bullet, alien) {
+
+        //当子弹撞击外星人，删除子弹和外星人
+        bullet.kill();
+        alien.kill();
+
+        //增加分数
+        score += 20;
+        scoreText.text = scoreString + score;
+
+        //加入爆照动画
+        var explosion = explosions.getFirstExists(false);
+        explosion.reset(alien.body.x, alien.body.y);
+        explosion.play('kaboom', 30, false, true);
+
+        //检测有几个没被删除，如果都被删除，增加分数，删除所有子弹，显示胜利字符串
+        if (aliens.countLiving() == 0)
+        {
+            score += 1000;
+            scoreText.text = scoreString + score;
+
+            enemyBullets.callAll('kill',this);
+            stateText.text = " You Won, \n Click to restart";
+            stateText.visible = true;
+
+            //点击重新开始时间
+            game.input.onTap.addOnce(restart,this);
+        }
+
+    }
+
+    function enemyHitsPlayer (player,bullet) {
+
+        bullet.kill();
+        //干掉最外面的生命值
+        live = lives.getFirstAlive();
+
+        if (live)
+        {
+            live.kill();
+        }
+
+        //爆炸动画
+        var explosion = explosions.getFirstExists(false);
+        explosion.reset(player.body.x, player.body.y);
+        explosion.play('kaboom', 30, false, true);
+
+        //如果挂掉了
+        if (lives.countLiving() < 1)
+        {
+            player.kill();
+            enemyBullets.callAll('kill');
+
+            stateText.text=" GAME OVER \n Click to restart";
+            stateText.visible = true;
+
+            //重新开始点击监听
+            game.input.onTap.addOnce(restart,this);
+        }
+
+    }
+
+    function enemyFires () {
+
+        //从弹库中取出子弹
+        enemyBullet = enemyBullets.getFirstExists(false);
+        //存活敌人数组重置为0
+        livingEnemies.length=0;
+
+        aliens.forEachAlive(function(alien){
+            //把存活敌人放进数组
+            livingEnemies.push(alien);
+        });
+
+        if (enemyBullet && livingEnemies.length > 0)
+        {
+
+            var random=game.rnd.integerInRange(0,livingEnemies.length-1);
+
+            //随机一个敌人并进行攻击
+            var shooter=livingEnemies[random];
+            enemyBullet.reset(shooter.body.x, shooter.body.y);
+
+            game.physics.arcade.moveToObject(enemyBullet,player,120);
+            firingTimer = game.time.now + 2000;
+        }
+
+    }
+
+    function fireBullet () {
+        if (game.time.now > bulletTime)
+        {
+            //从弹库中取出子弹
+            bullet = bullets.getFirstExists(false);
+
+            if (bullet)
+            {
+                //设置坐标
+                bullet.reset(player.x, player.y + 8);
+                //设置速度
+                bullet.body.velocity.y = -400;
+                //攻击间隔
+                bulletTime = game.time.now + 200;
+            }
+        }
+
+    }
+
+    function resetBullet (bullet) {
+        //干掉子弹
+        bullet.kill();
+
+    }
+
+    function restart () {
+        //重置生命
+        lives.callAll('revive');
+        //重新生成敌人
+        aliens.removeAll();
+        createAliens();
+
+        //重置飞机
+        player.revive();
+        //隐藏字符串
+        stateText.visible = false;
+
+    }
+
+</script>
+
+
+
+
