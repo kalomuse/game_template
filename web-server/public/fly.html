@@ -2,7 +2,7 @@
 <head>
     <meta charset="utf-8">
     <title>fly</title>
-    <script src="js/phaser.js"></script>
+    <link rel="stylesheet" href="/css/reset.css">
 </head>
 <body>
     <script type="text/javascript" src="/lib/phaser.js"></script>
@@ -48,7 +48,7 @@
             game.physics.startSystem(Phaser.Physics.ARCADE);
 
             //创建背景图
-            starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
+            starfield = game.add.tileSprite(0, 0, 640, 480, 'starfield');
 
             //创建子弹30个
             bullets = game.add.group();
@@ -72,7 +72,7 @@
             enemyBullets.setAll('checkWorldBounds', true);
 
             // 飞机
-            player = game.add.sprite(400, 500, 'ship');
+            player = game.add.sprite(400, 400, 'ship');
             player.anchor.setTo(0.5, 0.5);
             game.physics.enable(player, Phaser.Physics.ARCADE);
 
