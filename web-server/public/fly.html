@@ -48,7 +48,7 @@
             game.physics.startSystem(Phaser.Physics.ARCADE);
 
             //创建背景图
-            starfield = game.add.tileSprite(0, 0, 640, 480, 'starfield');
+            starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
 
             //创建子弹30个
             bullets = game.add.group();
@@ -364,7 +364,7 @@
 
             //重置飞机
             player.revive();
-            player.reset(400, 500);
+            player.reset(400, 400);
             //隐藏字符串
             stateText.visible = false;
 
