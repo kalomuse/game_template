@@ -5,7 +5,6 @@
     <script src="js/phaser.js"></script>
 </head>
 <body>
-    <div id="game" style="width:800px;height:600px;"></div>
     <script type="text/javascript" src="/lib/phaser.js"></script>
     <script>
         var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game', { init: init, preload: preload, create: create, update: update, render: render });
@@ -13,6 +12,8 @@
             game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             game.scale.pageAlignVertically = true;
             game.scale.pageAlignHorizontally = true;
+            game.input.maxPointers = 1;
+            //game.scale.startFullScreen(false);
         }
         function preload() {
             game.load.image('bullet', 'assets/bullet.png');                         //飞机子弹

@@ -26,7 +26,14 @@
     </script>
     <script type="text/javascript" src="/lib/phaser.js"></script>
     <script type="text/javascript">
-    var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+    var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game', { init:init, preload: preload, create: create, update: update, render: render });
+    function init() {
+        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.scale.pageAlignVertically = true;
+        game.scale.pageAlignHorizontally = true;
+        game.input.maxPointers = 1;
+        //game.scale.startFullScreen(false);
+    }
 
     function preload() {
         game.load.image('space', '/assets/starfield.jpg');
