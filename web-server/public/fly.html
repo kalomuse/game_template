@@ -358,10 +358,17 @@
 
                 if (bullet)
                 {
+
+                    var tany = Math.sin(((player.angle)/360) * 2 * Math.PI);
+                    var tanx = Math.cos(((player.angle)/360) * 2 * Math.PI);
+                    var angle = bullet.angle;
                     //设置坐标
-                    bullet.reset(player.x, player.y + 8);
+                    bullet.reset(player.x + tanx * 8, player.y + tany * 8);
                     //设置速度
-                    bullet.body.velocity.y = -400;
+                    bullet.angle = player.angle + 90;
+
+                    bullet.body.velocity.y = tany * 400;
+                    bullet.body.velocity.x = tanx * 400;
                     //攻击间隔
                     bulletTime = game.time.now + 200;
                 }
