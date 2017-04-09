@@ -26,12 +26,15 @@
     </script>
     <script type="text/javascript" src="/lib/phaser.js"></script>
     <script type="text/javascript">
-    var game = new Phaser.Game(640, 480, Phaser.CANVAS, 'game', { init: init, preload: preload, create: create, update: update, render: render });
+    var maxWidth = 960, maxHeight = 640, width = 640, height = 480;
+    var game = new Phaser.Game(width, height, Phaser.CANVAS, 'game', { init: init, preload: preload, create: create, update: update, render: render });
     function init() {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.scale.pageAlignVertically = true;
         game.scale.pageAlignHorizontally = true;
         game.input.maxPointers = 1;
+        game.scale.maxWidth = maxWidth;
+        game.scale.maxHeight = maxHeight;
         //game.scale.startFullScreen(false);
     }
 

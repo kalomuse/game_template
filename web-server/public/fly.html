@@ -7,23 +7,26 @@
 <body>
     <script type="text/javascript" src="/lib/phaser.js"></script>
     <script>
-        var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game', { init: init, preload: preload, create: create, update: update, render: render });
+        var maxWidth = 1200, maxHeight = 800, width = 800, height = 600;
+
+        var game = new Phaser.Game(width, height, Phaser.CANVAS, 'game', { init: init, preload: preload, create: create, update: update, render: render });
         function init() {
             game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             game.scale.pageAlignVertically = true;
             game.scale.pageAlignHorizontally = true;
             game.input.maxPointers = 1;
+            game.scale.maxWidth = maxWidth;
+            game.scale.maxHeight = maxHeight;
             //game.scale.startFullScreen(false);
         }
         function preload() {
             game.load.image('bullet', 'assets/bullet.png');                         //飞机子弹
             game.load.image('enemyBullet', 'assets/enemy-bullet.png');              //怪物子弹
             game.load.spritesheet('invader', 'assets/invader32x32x4.png', 32, 32);  //怪物
-            game.load.image('ship', 'assets/player.png');                           //飞机
+            game.load.image('ship', 'assets/thrust.png');                           //飞机
+            game.load.image('bg', '/assets/starfield.png');                         //背景图
             game.load.spritesheet('kaboom', 'assets/explode.png', 128, 128);        //爆炸动画效果
-            game.load.image('starfield', 'assets/starfield.png');                   //背景
-            //game.load.image('background', 'assets/background2.png');
-
+            game.load.atlas('generic', 'assets/generic-joystick/generic-joystick.png', 'assets/generic-joystick/generic-joystick.json');
         }
 
         var player;
@@ -48,7 +51,8 @@
             game.physics.startSystem(Phaser.Physics.ARCADE);
 
             //创建背景图
-            starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
+            bg = game.add.tileSprite(0, 0, game.width, game.height, 'bg');
+            bg.autoScroll(0, 100);
 
             //创建子弹30个
             bullets = game.add.group();
@@ -72,7 +76,7 @@
             enemyBullets.setAll('checkWorldBounds', true);
 
             // 飞机
-            player = game.add.sprite(400, 400, 'ship');
+            player = game.add.sprite(game.width/2, game.height/2 + 150, 'ship');
             player.anchor.setTo(0.5, 0.5);
             game.physics.enable(player, Phaser.Physics.ARCADE);
 
@@ -83,12 +87,12 @@
             createAliens();
 
             //分数字符
-            scoreString = 'Score : ';
+            scoreString = '分数 : ';
             scoreText = game.add.text(10, 10, scoreString + score, { font: '34px Arial', fill: '#fff' });
 
             //生命字符
             lives = game.add.group();
-            game.add.text(game.world.width - 100, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
+            game.add.text(game.world.width - 100, 10, '生命 : ', { font: '34px Arial', fill: '#fff' });
 
             //start字符
             stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
@@ -155,10 +159,6 @@
         }
 
         function update() {
-
-            //背景移动
-            starfield.tilePosition.y += 2;
-
             if (player.alive)
             {
                 //左右键监听
@@ -233,7 +233,7 @@
             if (lives.countLiving() < 1) {
                 enemyBullets.callAll('kill');
 
-                stateText.text=" GAME OVER \n Click to restart";
+                stateText.text="重新开始 \n    click";
                 stateText.visible = true;
 
                 //重新开始点击监听
@@ -364,7 +364,7 @@
 
             //重置飞机
             player.revive();
-            player.reset(400, 400);
+            player.reset(game.width/2, game.height/2 + 150);
             //隐藏字符串
             stateText.visible = false;
 

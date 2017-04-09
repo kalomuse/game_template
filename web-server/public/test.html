@@ -1,12 +1,15 @@
 <script type="text/javascript" src="/lib/phaser.js"></script>
 <script type="text/javascript">
+    var maxWidth = 960, maxHeight = 640, width = 640, height = 480;
     var speed = 4;
-    var game = new Phaser.Game(640, 480, Phaser.CANVAS, 'phaser-test', { init: init, preload: preload, create: create, update: update, render: render});
+    var game = new Phaser.Game(width, height, Phaser.CANVAS, 'phaser-test', { init: init, preload: preload, create: create, update: update, render: render});
     function init() {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.scale.pageAlignVertically = true;
         game.scale.pageAlignHorizontally = true;
         game.input.maxPointers = 1;
+        game.scale.maxWidth = maxWidth;
+        game.scale.maxHeight = maxHeight;
         //game.scale.startFullScreen(false);
     }
     function preload(){ //预加载
@@ -21,8 +24,8 @@
     function create() {
         //背景
         game.add.tileSprite(0, 0, game.width, game.height, 'space');
-        game.add.tileSprite(game.width, 0, game.width, game.height, 'space');
-
+        var space = game.add.tileSprite(game.width, 0, game.width, game.height, 'space');
+        space.autoScroll(0, 100);
         //设置世界
         game.world.setBounds(0, 0, 1400, 1400);
 
