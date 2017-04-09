@@ -159,6 +159,14 @@
             {
                 player.body.velocity.x = 200;
             }
+            if (cursors.up.isDown)
+            {
+                player.body.velocity.y = -200;
+            }
+            else if (cursors.down.isDown)
+            {
+                player.body.velocity.y = 200;
+            }
 
             //开火
             if (fireButton.isDown)
@@ -172,6 +180,7 @@
             }
 
             //子弹和外星人碰撞回调
+            game.physics.arcade.overlap(player, aliens, HitsHandler, null, this);
             game.physics.arcade.overlap(bullets, aliens, collisionHandler, null, this);
             //子弹和飞机碰撞回调
             game.physics.arcade.overlap(enemyBullets, player, enemyHitsPlayer, null, this);
@@ -186,6 +195,37 @@
         //     game.debug.body(aliens.children[i]);
         // }
 
+    }
+
+    function HitsHandler (player, aliens) {
+        //当飞机撞击外星人，删除飞机和外星人
+        aliens.kill();
+        //干掉最外面的生命值
+        live = lives.getFirstAlive();
+        if (live) { //如果还有命
+            live.kill();
+        } else {
+            player.kill();
+        }
+        //加入爆照动画
+        var explosion = explosions.getFirstExists(false);
+        explosion.reset(aliens.body.x, aliens.body.y);
+        explosion.play('kaboom', 30, false, true);
+
+        //增加分数
+        score += 20;
+        scoreText.text = scoreString + score;
+
+        //如果挂掉了
+        if (lives.countLiving() < 1) {
+            enemyBullets.callAll('kill');
+
+            stateText.text=" GAME OVER \n Click to restart";
+            stateText.visible = true;
+
+            //重新开始点击监听
+            game.input.onTap.addOnce(restart,this);
+        }
     }
 
     function collisionHandler (bullet, alien) {
@@ -311,6 +351,7 @@
 
         //重置飞机
         player.revive();
+        player.reset(400, 500);
         //隐藏字符串
         stateText.visible = false;
 
