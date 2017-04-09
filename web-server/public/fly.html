@@ -8,7 +8,7 @@
     <div id="game" style="width:800px;height:600px;"></div>
     <script type="text/javascript" src="/lib/phaser.js"></script>
     <script>
-        var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game', { init: init, preload: preload, create: create, update: update, render: render });
+        var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game', { init: init, preload: preload, create: create, update: update, render: render });
         function init() {
             game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             game.scale.pageAlignVertically = true;

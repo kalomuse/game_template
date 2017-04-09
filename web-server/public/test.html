@@ -1,7 +1,7 @@
 <script type="text/javascript" src="/lib/phaser.js"></script>
 <script type="text/javascript">
     var speed = 4;
-    var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-test', { preload: preload, create: create, update: update, render: render});
+    var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-test', { preload: preload, create: create, update: update, render: render});
     function preload(){ //预加载
         game.load.image('space', '/assets/starfield.jpg');
         game.load.spritesheet('ball', '/assets/plasmaball.png', 128,128);

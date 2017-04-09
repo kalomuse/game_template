@@ -1,5 +1,5 @@
-var express = require('express');
-var app = express.createServer();
+var express = require("express");
+var app = express();
 
 app.configure(function(){
   app.use(express.methodOverride());
@@ -22,6 +22,6 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-console.log("Web server has started.\nPlease log on http://127.0.0.1:3001/index.html");
+console.log("Web server has started.\nPlease log on http://127.0.0.1:3002/index.html");
 
-app.listen(3001);
+app.listen(3002);
