@@ -225,7 +225,7 @@ GameState.prototype = {
             this.scoreText.text = this.scoreString + this.score;
 
             this.enemyBullets.callAll('kill',this);
-            this.stateText.text = " You Won, \n Click to restart";
+            this.stateText.text = "重新开始 \n    click";
             this.stateText.visible = true;
 
             //点击重新开始时间

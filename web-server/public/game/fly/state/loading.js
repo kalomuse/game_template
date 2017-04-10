@@ -1,5 +1,6 @@
 var LoadingState = function () {
-
+    this.maxWidth = maxWidth;
+    this.maxHeight = maxHeight;
 };
 
 LoadingState.prototype = {
@@ -7,8 +8,8 @@ LoadingState.prototype = {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.scale.pageAlignVertically = true;
         game.scale.pageAlignHorizontally = true;
-        game.scale.maxWidth = maxWidth;
-        game.scale.maxHeight = maxHeight;
+        game.scale.maxWidth = this.maxWidth;
+        game.scale.maxHeight = this.maxHeight;
         //game.scale.startFullScreen(false);
     },
 
