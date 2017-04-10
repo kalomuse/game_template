@@ -39,10 +39,14 @@ GameState.prototype = {
         game.load.image('bg', '/assets/fly/starfield.png');                         //背景图
         game.load.spritesheet('kaboom', '/assets/fly/explode.png', 128, 128);        //爆炸动画效果
         game.load.atlas('gamepad', '/assets/generic-joystick/generic-joystick.png', '/assets/generic-joystick/generic-joystick.json');
-
+        game.load.audio('normalback', '/assets/fly/normalback.mp3');                     //背景音乐
     },
 
     create: function () {
+        // 背景音乐
+        var normalback = game.add.audio('normalback', 0.2, true);
+        normalback.play();
+
         //开启物理引擎
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
