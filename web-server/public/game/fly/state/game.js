@@ -286,7 +286,7 @@ GameState.prototype = {
             player.kill();
             this.enemyBullets.callAll('kill');
 
-            this.stateText.text=" GAME OVER \n Click to restart";
+            this.stateText.text="重新开始 \n    click";
             this.stateText.visible = true;
 
             //重新开始点击监听
