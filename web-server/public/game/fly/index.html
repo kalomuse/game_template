@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>fly</title>
+</head>
+<body>
+    <script type="text/javascript" src="/lib/phaser.js"></script>
+    <script type="text/javascript" src="/lib/gamepad.js"></script>
+    <script type="text/javascript" src="/game/fly/state/loading.js"></script>
+    <script type="text/javascript" src="/game/fly/state/game.js"></script>
+    <script>
+        var maxWidth = 1200, maxHeight = 800, width = 800, height = 600;
+        var game = new Phaser.Game(width, height, Phaser.CANVAS, 'game');
+        game.state.add('LoadingState', LoadingState, true);
+        game.state.add('GameState', GameState, true);
+        game.state.start("LoadingState");
+    </script>
+</body>
+</html>
+
+
+
