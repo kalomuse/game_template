@@ -17,6 +17,131 @@
         game.state.add('GameState', GameState, true);
         game.state.start("LoadingState");
     </script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script>
+        wx.config({
+            debug: false,
+            appId: '${dic_sign.get("appId")}',
+            timestamp: '${dic_sign.get("timestamp")}',
+            nonceStr: '${dic_sign.get("nonceStr")}',
+            signature: '${dic_sign.get("signature")}',
+            jsApiList: [
+                'checkJsApi',
+                'onMenuShareTimeline',
+                'onMenuShareAppMessage',
+                'onMenuShareQQ',
+                'onMenuShareWeibo',
+                'hideMenuItems',
+                'showMenuItems',
+                'hideAllNonBaseMenuItem',
+                'showAllNonBaseMenuItem',
+                'translateVoice',
+                'startRecord',
+                'stopRecord',
+                'onRecordEnd',
+                'playVoice',
+                'pauseVoice',
+                'stopVoice',
+                'uploadVoice',
+                'downloadVoice',
+                'chooseImage',
+                'previewImage',
+                'uploadImage',
+                'downloadImage',
+                'getNetworkType',
+                'openLocation',
+                'getLocation',
+                'hideOptionMenu',
+                'showOptionMenu',
+                'closeWindow',
+                'scanQRCode',
+                'chooseWXPay',
+                'openProductSpecificView',
+                'addCard',
+                'chooseCard',
+                'openCard'
+            ]
+        });
+
+        wx.ready(function () {
+            // 1 判断当前版本是否支持指定 JS 接口，支持批量判断
+            wx.checkJsApi({
+                jsApiList: [
+                    'previewImage',
+                    'onMenuShareTimeline',
+                    'onMenuShareAppMessage',
+                    'onMenuShareQQ',
+                    'onMenuShareWeibo'
+                ],
+                success: function (res) {
+                    //alert(JSON.stringify(res));
+                }
+            });
+
+            var share_img = 'http://game.tikyy.com/assets/icon/icon.jpg';
+            var share_desc = '人生是一场旅行，不必在乎目的地，在乎的是沿途的风景，以及看风景时的心情，让心灵去旅行。';
+            var share_title = '畅想未来，尽在飞翔的哈士奇';
+            var link_url = 'http://game.tikyy.com/game/fly/';
+
+            //分享到朋友圈
+            wx.onMenuShareTimeline({
+                title: share_title, // 分享标题
+                link: link_url, // 分享链接
+                imgUrl: share_img, // 分享图标
+                success: function () {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function () {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+
+            //分享给朋友
+            wx.onMenuShareAppMessage({
+                title: share_title, // 分享标题
+                desc: share_desc, // 分享描述
+                link: link_url, // 分享链接
+                imgUrl: share_img, // 分享图标
+                type: '', // 分享类型,music、video或link，不填默认为link
+                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                success: function () {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function () {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+
+            //分享到QQ
+            wx.onMenuShareQQ({
+                title: share_title, // 分享标题
+                desc: share_desc, // 分享描述
+                link: link_url, // 分享链接
+                imgUrl: share_img, // 分享图标
+                success: function () {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function () {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+
+            //分享到腾讯微博
+            wx.onMenuShareWeibo({
+                title: share_title, // 分享标题
+                desc: share_desc, // 分享描述
+                link: link_url, // 分享链接
+                imgUrl: share_img, // 分享图标
+                success: function () {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function () {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+
+        });
+    </script>
 </body>
 </html>
 
